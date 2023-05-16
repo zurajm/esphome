@@ -259,7 +259,7 @@ uint8_t AS3935Component::read_div_ratio() {
 uint8_t AS3935Component::read_capacitance() {
   ESP_LOGV(TAG, "Calling read_capacitance");
   uint8_t reg_val = this->read_register_(FREQ_DISP_IRQ, CAP_MASK) * 8; // Multiplied by 8pF
-  return reg_val
+  return reg_val;
 }
 
 // REG0x08, bits [5,6,7], manufacturer default: 0.
