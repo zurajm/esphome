@@ -239,8 +239,8 @@ uint32_t AS3935Component::get_lightning_energy_() {
 // so when modifying the resonance frequency with the internal capacitors
 // (tuneCap()) it's important to keep in mind that the displayed frequency on
 // the IRQ pin is divided by this number.
-uint8_t AS3935Component::get_div_ratio() {
-  ESP_LOGV(TAG, "Calling get_div_ratio");
+uint8_t AS3935Component::read_div_ratio() {
+  ESP_LOGV(TAG, "Calling read_div_ratio");
   uint8_t reg_val = this->read_register_(INT_MASK_ANT, DIV_MASK);
   reg_val >>= 6;  // Front of the line.
 
@@ -256,9 +256,9 @@ uint8_t AS3935Component::get_div_ratio() {
   return 0;
 }
 
-uint8_t AS3935Component::get_tune_cap() {
-  ESP_LOGV(TAG, "Calling get_tune_cap");
-  uint8_t reg_val = this->read_register_(FREQ_DISP_IRQ, CAP_MASK) * 8; // Multiplied by 8pF
+uint8_t AS3935Component::read_capacitance() {
+  ESP_LOGV(TAG, "Calling read_capacitance");
+  return uint8_t reg_val = this->read_register_(FREQ_DISP_IRQ, CAP_MASK) * 8; // Multiplied by 8pF
 }
 
 // REG0x08, bits [5,6,7], manufacturer default: 0.
@@ -266,7 +266,7 @@ uint8_t AS3935Component::get_tune_cap() {
 //  _osc 1, bit[5] = TRCO - System RCO at 32.768kHz
 //  _osc 2, bit[6] = SRCO - Timer RCO Oscillators 1.1MHz
 //  _osc 3, bit[7] = LCO - Frequency of the Antenna
-void AS3935Component::display_oscillator(bool _state, uint8_t osc) {
+void AS3935Component::display_oscillator(uint8_t _state, uint8_t osc) {
   if ((osc < 1) || (osc > 3))
     return;
   this->write_register(FREQ_DISP_IRQ, OSC_MASK, _state, 4 + osc);
@@ -302,8 +302,8 @@ bool AS3935Component::calibrate_oscillator() {
 
 void AS3935Component::tune_antenna() {
   ESP_LOGI(TAG, "Starting antenna tuning...");
-  uint8_t div_ratio = this->get_div_ratio();
-  uint8_t tune_val = this->get_tune_cap();
+  uint8_t div_ratio = this->read_div_ratio();
+  uint8_t tune_val = this->read_capacitance();
   ESP_LOGI(TAG, "Division Ratio is set to: %d", div_ratio);
   ESP_LOGI(TAG, "Internal Capacitor is set to: %d", tune_val);
   ESP_LOGI(TAG, "Displaying oscillator on INT pin. Measure its frequency - multiply value by DivisionRatio");

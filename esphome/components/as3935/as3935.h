@@ -94,10 +94,10 @@ class AS3935Component : public Component {
   void write_div_ratio(uint8_t div_ratio);
   void set_capacitance(uint8_t capacitance) { capacitance_ = capacitance; }
   void write_capacitance(uint8_t capacitance);
-  uint8_t get_div_ratio();
-  uint8_t get_tune_cap();
+  uint8_t read_div_ratio();
+  uint8_t read_capacitance();
   bool calibrate_oscillator();
-  void display_oscillator(bool state, uint8_t osc);
+  void display_oscillator(uint8_t state, uint8_t osc);
   void tune_antenna();
   void set_tune_antenna(bool tune_antenna) { tune_antenna_ = tune_antenna; }
   void set_calibration(bool calibration) { calibration_ = calibration; }
